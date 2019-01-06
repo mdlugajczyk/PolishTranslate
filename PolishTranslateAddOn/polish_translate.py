@@ -15,6 +15,9 @@ from bs4 import BeautifulSoup
 # Get your unique API key by signing up at http://www.dictionaryapi.com/
 MERRIAM_WEBSTER_API_KEY = ""
 
+# Index of field with the work to translate
+WORD_FIELD = 0
+
 # Index of field to insert definitions into
 DEFINITION_FIELD = 1
 
@@ -51,19 +54,20 @@ def get_pronunciation_url(word):
 def do_word(word):
     url, new_word = get_pronunciation_url(word)
     if not url or not new_word:
-        return None, None
+        return None, None, None
     translations = get_translations(new_word)
-    return url, translations
+    return url, new_word, translations
 
 def get_definition(editor):
     editor.saveNow(lambda: _get_definition(editor))
 
 def _get_definition(editor):
     word = editor.note.fields[0].strip()
-    wav_url, translation = do_word(word)  #get_preferred_valid_entries(editor, word)
+    wav_url, new_word, translation = do_word(word)  #get_preferred_valid_entries(editor, word)
     if not wav_url or not translation:
         showInfo("Failed to fetch wav file & translation")
     sound_file = editor.urlToFile(wav_url).strip()
+    insert_into_field(editor, new_word, WORD_FIELD, overwrite=True)
     insert_into_field(editor, '[sound:' + sound_file + ']', PRONUNCIATION_FIELD)
     insert_into_field(editor, translation, DEFINITION_FIELD)
     editor.web.eval("focusField(%d);" % 0)
