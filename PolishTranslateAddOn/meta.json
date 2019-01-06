@@ -1,0 +1,4 @@
+{
+    "name": "PolishTranslate - Automatically translate English words into Polish & get pronunciation",
+    "config": {"MERRIAM_WEBSTER_API_KEY": "f1674600-0c7c-4ce5-9b44-88955cd9f406"}
+}
